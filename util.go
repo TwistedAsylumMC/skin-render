@@ -38,8 +38,8 @@ var (
 	//go:embed alex.png
 	rawAlexData []byte
 
-	steveSkin *image.NRGBA = image.NewNRGBA(image.Rect(0, 0, 64, 64))
-	alexSkin  *image.NRGBA = image.NewNRGBA(image.Rect(0, 0, 64, 64))
+	steveSkin *image.NRGBA
+	alexSkin  *image.NRGBA
 )
 
 func init() {
@@ -50,6 +50,7 @@ func init() {
 			log.Fatal(err)
 		}
 
+		steveSkin = image.NewNRGBA(rawSteveSkin.Bounds())
 		draw.Draw(steveSkin, rawSteveSkin.Bounds(), rawSteveSkin, image.Pt(0, 0), draw.Src)
 	}
 
@@ -60,6 +61,7 @@ func init() {
 			log.Fatal(err)
 		}
 
+		alexSkin = image.NewNRGBA(rawAlexSkin.Bounds())
 		draw.Draw(alexSkin, rawAlexSkin.Bounds(), rawAlexSkin, image.Pt(0, 0), draw.Src)
 	}
 }
@@ -72,10 +74,10 @@ func GetDefaultSkin(slim bool) *image.NRGBA {
 	return steveSkin
 }
 
-func extract(img *image.NRGBA, x, y, width, height int) *image.NRGBA {
-	output := image.NewNRGBA(image.Rect(0, 0, width, height))
+func extract(img *image.NRGBA, x, y, width, height, uvScale int) *image.NRGBA {
+	output := image.NewNRGBA(image.Rect(0, 0, width*uvScale, height*uvScale))
 
-	draw.Draw(output, output.Bounds(), img, image.Pt(x, y), draw.Src)
+	draw.Draw(output, output.Bounds(), img, image.Pt(x*uvScale, y*uvScale), draw.Src)
 
 	return output
 }
